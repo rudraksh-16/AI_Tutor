@@ -24,7 +24,7 @@ async def register_user(request: schemas.UserCreate, db: AsyncSession = Depends(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error registering user: {e}")
+        logger.error("Error registering user: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred: {str(e)}"
@@ -38,7 +38,7 @@ async def login_user(request: schemas.UserLogin, db: AsyncSession = Depends(get_
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error logging in user: {e}")
+        logger.error("Error logging in user: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred: {str(e)}"
@@ -58,7 +58,7 @@ async def refresh_token(request: TokenRefresh, db: AsyncSession = Depends(get_db
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error refreshing token: {e}")
+        logger.error("Error refreshing token: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred: {str(e)}"

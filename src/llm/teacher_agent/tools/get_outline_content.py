@@ -1,9 +1,12 @@
+import logging
 from typing import Dict, Any
 from uuid import UUID
 
 from src.backend.db.database import SessionLocal
 from src.backend.repository.course_repo import course_repo
 from src.llm.agent_core.tool import Tool
+
+logger = logging.getLogger(__name__)
 
 
 def make_get_outline_content(chapter_id: str):
@@ -32,4 +35,5 @@ async def get_outline_content(chapter_id: str) -> str:
             return res.scalar()
 
         except Exception as e:
-            raise RuntimeError(f"Failed to load chapter plan: {e}")
+            logger.exception("Failed to load chapter plan for chapter_id=%s", chapter_id)
+            raise RuntimeError(f"Failed to load chapter plan: {e}") from e

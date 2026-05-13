@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Optional, Any, Tuple, Dict
+from typing import AsyncGenerator, Dict, List, Optional, Any, Tuple
 
 from openai import OpenAI, AsyncOpenAI
 
@@ -122,7 +122,7 @@ class Agent:
         
         return {"input": tool_input, "output": tool_output}
 
-    async def astream(self, chat_history):
+    async def astream(self, chat_history: List[Dict[str, Any]]) -> AsyncGenerator[Dict[str, Any], None]:
         chat_history = self._format_chat_history(chat_history or [])
         state = {"final_text": "", "tool_calls": [], "current_tool": None, "tool_args_buffer": ""}
 

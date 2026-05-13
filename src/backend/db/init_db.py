@@ -25,7 +25,7 @@ async def init_db(confirm: bool = False) -> None:
 
 if __name__ == "__main__":
     if "--confirm" not in sys.argv:
-        print("ERROR: Pass --confirm to acknowledge this will DROP ALL TABLES.")
-        print("Usage: python -m src.backend.db.init_db --confirm")
+        logger.error("Pass --confirm to acknowledge this will DROP ALL TABLES.")
+        logger.error("Usage: python -m src.backend.db.init_db --confirm")
         sys.exit(1)
     asyncio.run(init_db(confirm=True))

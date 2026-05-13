@@ -36,6 +36,7 @@ class BaseRepository(Generic[ModelType]):
             await db.commit()
             await db.refresh(db_obj)
         except Exception:
+            logger.exception("DB error during create of %s", self.model.__name__)
             try:
                 await db.rollback()
             except Exception as rollback_err:
@@ -50,6 +51,7 @@ class BaseRepository(Generic[ModelType]):
             await db.commit()
             await db.refresh(db_obj)
         except Exception:
+            logger.exception("DB error during update of %s", self.model.__name__)
             try:
                 await db.rollback()
             except Exception as rollback_err:
@@ -65,6 +67,7 @@ class BaseRepository(Generic[ModelType]):
                 await db.commit()
                 await db.refresh(obj)
             except Exception:
+                logger.exception("DB error during delete of %s id=%s", self.model.__name__, id)
                 try:
                     await db.rollback()
                 except Exception as rollback_err:

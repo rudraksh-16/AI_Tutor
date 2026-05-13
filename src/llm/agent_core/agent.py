@@ -122,19 +122,6 @@ class Agent:
         
         return {"input": tool_input, "output": tool_output}
 
-    async def stream(self, chat_history=None):
-        chat_history = self._format_chat_history(chat_history or [])
-        state = {"final_text": "", "tool_calls": [], "current_tool": None, "tool_args_buffer": ""}
-
-        for _ in range(self.max_iteration):
-            if state["final_text"] or len(state["tool_calls"]) >= self.max_tool_call:
-                break
-
-            with self._call_llm(chat_history=chat_history, stream=True) as stream:
-                for event in stream:
-                    async for chunk in self._dispatch_event(event, state, chat_history):
-                        yield chunk
-
     async def astream(self, chat_history):
         chat_history = self._format_chat_history(chat_history or [])
         state = {"final_text": "", "tool_calls": [], "current_tool": None, "tool_args_buffer": ""}

@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, String, ForeignKey, Enum, Text
+from sqlalchemy import Column, String, ForeignKey, Enum, Text, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -14,6 +14,9 @@ class ConversationType(enum.Enum):
 
 class Conversation(BaseModel):
     __tablename__ = "conversations"
+    __table_args__ = (
+        Index("ix_conversations_user_chapter_type", "user_id", "chapter_id", "type"),
+    )
 
     user_id = Column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False

@@ -9,8 +9,16 @@ from src.backend.api.v1.router import api_router
 from src.backend.api.auth.routes import router as auth_router
 from src.backend.config import Config
 from src.llm.config import LLMConfig
+from src.backend.db.database import engine
 from src.backend.services.planner_service import PlannerService
 from src.backend.common.exceptions import BaseAppError
+
+
+def _validate_env() -> None:
+    required = ["DATABASE_URL", "ACCESS_SECRET_KEY", "REFRESH_SECRET_KEY"]
+    missing = [k for k in required if not os.getenv(k)]
+    if missing:
+        raise RuntimeError(f"Missing required environment variables: {missing}")
 
 # Create logs directory if it doesn't exist
 os.makedirs("logs", exist_ok=True)
@@ -120,10 +128,10 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Recover any stalled planning tasks
+    _validate_env()
     await PlannerService.recover_stalled_tasks()
     yield
-    # Shutdown logic (if any) could go here
+    await engine.dispose()
 
 app = FastAPI(
     title="AI Tutor API",
@@ -136,8 +144,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 
 @app.exception_handler(BaseAppError)

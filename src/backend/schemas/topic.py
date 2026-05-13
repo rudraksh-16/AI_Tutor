@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, Field
 from typing import List, Optional
 from datetime import datetime
 from src.backend.enums.status import TopicStatus
@@ -6,8 +6,8 @@ from src.backend.schemas.chapter import ChapterRead
 
 
 class TopicBase(BaseModel):
-    title: str
-    user_summary: str
+    title: str = Field(..., min_length=1, max_length=256)
+    user_summary: str = Field(..., min_length=1, max_length=5000)
 
 
 class TopicCreate(TopicBase):

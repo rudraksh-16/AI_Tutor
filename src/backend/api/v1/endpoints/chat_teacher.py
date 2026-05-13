@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.backend.api.auth.utils import get_current_user
@@ -19,7 +19,7 @@ router = APIRouter()
 
 class TeacherChatRequest(BaseModel):
     chapter_id: UUID
-    user_message: str | None = None
+    user_message: str | None = Field(None, max_length=10000)
     resume_stream: bool = False
 
 

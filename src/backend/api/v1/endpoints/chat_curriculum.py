@@ -6,7 +6,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.backend.api.auth.utils import get_current_user
@@ -25,17 +25,17 @@ router = APIRouter()
 
 class CurriculumChatRequest(BaseModel):
     topic_id: UUID
-    user_message: Optional[str] = None
+    user_message: Optional[str] = Field(None, max_length=10000)
     resume_stream: bool = False
 
 
 class ChapterAccept(BaseModel):
-    title: str
+    title: str = Field(..., min_length=1, max_length=256)
     items: List[str]
 
 
 class CurriculumPlanRequest(BaseModel):
-    topicTitle: Optional[str] = None
+    topicTitle: Optional[str] = Field(None, max_length=256)
     chapters: List[ChapterAccept] = []
 
 

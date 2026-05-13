@@ -2,7 +2,7 @@ from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.backend.api.auth.utils import get_current_user, get_ws_user
@@ -21,8 +21,8 @@ router = APIRouter()
 
 
 class TopicStartRequest(BaseModel):
-    title: str
-    user_summary: str
+    title: str = Field(..., min_length=1, max_length=256)
+    user_summary: str = Field(..., min_length=1, max_length=5000)
 
 
 class PlanningStatusResponse(BaseModel):

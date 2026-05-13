@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 from uuid import UUID
 
@@ -16,6 +17,8 @@ from src.backend.repository.topic_repo import topic_repo
 from src.backend.schemas.chapter import ChapterRead
 from src.backend.schemas.topic import TopicCreate, TopicRead
 from src.backend.services.planner_service import PlannerService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -115,25 +118,38 @@ async def get_planning_status(
     return result
 
 
+async def _authorize_ws_topic(
+    websocket: WebSocket,
+    topic_id: UUID,
+    token: Optional[str],
+    db: AsyncSession,
+) -> bool:
+    """Verify token and topic ownership. Closes socket with 1008 and returns False on failure."""
+    try:
+        current_user = await get_ws_user(token or "", db)
+    except HTTPException:
+        await websocket.close(code=1008)
+        return False
+
+    topic_obj = await topic_repo.get(db, topic_id)
+    if not topic_obj or str(topic_obj.user_id) != str(current_user.id):
+        await websocket.close(code=1008)
+        return False
+
+    return True
+
+
 @router.websocket("/{topic_id}/status/ws")
 async def websocket_planning_status(
     websocket: WebSocket,
     topic_id: UUID,
     token: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
-):
-    """WebSocket endpoint to push live planning status. Auth via ?token= query param."""
+) -> None:
+    """Push live planning status over WebSocket. Auth via ?token= query param."""
     await websocket.accept()
 
-    try:
-        current_user = await get_ws_user(token or "", db)
-    except HTTPException:
-        await websocket.close(code=1008)
-        return
-
-    topic_obj = await topic_repo.get(db, topic_id)
-    if not topic_obj or str(topic_obj.user_id) != str(current_user.id):
-        await websocket.close(code=1008)
+    if not await _authorize_ws_topic(websocket, topic_id, token, db):
         return
 
     topic_key = str(topic_id)
@@ -150,5 +166,6 @@ async def websocket_planning_status(
     except WebSocketDisconnect:
         manager.disconnect(websocket, topic_key)
     except Exception:
+        logger.error("Unexpected error in WebSocket handler for topic %s", topic_id, exc_info=True)
         manager.disconnect(websocket, topic_key)
 

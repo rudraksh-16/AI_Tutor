@@ -1,5 +1,5 @@
 import json
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -19,7 +19,7 @@ router = APIRouter()
 
 class TeacherChatRequest(BaseModel):
     chapter_id: UUID
-    user_message: str | None = Field(None, max_length=10000)
+    user_message: Optional[str] = Field(None, max_length=10000)
     resume_stream: bool = False
 
 
@@ -81,7 +81,7 @@ async def _teacher_post_process(
         yield f"data: {json.dumps({'type': 'chapter_completed', 'chapter_id': str(chapter_id)})}\n\n"
 
 
-def _get_status_action(final_data: dict) -> str | None:
+def _get_status_action(final_data: dict) -> Optional[str]:
     """Check tool calls to determine if the chapter transitioned to a new state."""
     for tc in final_data.get("tool_calls", []):
         tool_input = tc.get("input", {})

@@ -1,7 +1,11 @@
-from typing import Optional, Any
+import logging
+from typing import Any, Optional
+
 from openai import OpenAI
 
 from src.llm.config import LLMConfig
+
+logger = logging.getLogger(__name__)
 
 TEMPERATURE = 0.5
 MODEL = "gpt-4.1-mini"
@@ -47,5 +51,6 @@ def expand_query(query: str, extra: Optional[Any] = None) -> str:
 
         return response.output_text.strip()
 
-    except Exception as e:
+    except Exception:
+        logger.exception("Query expansion failed for query=%r, returning original", query)
         return query

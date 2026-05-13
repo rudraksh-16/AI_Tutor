@@ -1,16 +1,20 @@
+import logging
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
-from uuid import UUID
 
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.backend.models.base import BaseModel
 
+logger = logging.getLogger(__name__)
+
 ModelType = TypeVar("ModelType", bound=BaseModel)
 
 
 class BaseRepository(Generic[ModelType]):
-    def __init__(self, model: Type[ModelType]):
+    """Generic async repository providing CRUD operations for SQLAlchemy models."""
+
+    def __init__(self, model: Type[ModelType]) -> None:
         self.model = model
 
     async def get(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
@@ -34,8 +38,8 @@ class BaseRepository(Generic[ModelType]):
         except Exception:
             try:
                 await db.rollback()
-            except Exception:
-                pass
+            except Exception as rollback_err:
+                logger.warning("Rollback failed after create error: %s", rollback_err)
             raise
         return db_obj
 
@@ -48,8 +52,8 @@ class BaseRepository(Generic[ModelType]):
         except Exception:
             try:
                 await db.rollback()
-            except Exception:
-                pass
+            except Exception as rollback_err:
+                logger.warning("Rollback failed after update error: %s", rollback_err)
             raise
         return db_obj
 
@@ -63,7 +67,7 @@ class BaseRepository(Generic[ModelType]):
             except Exception:
                 try:
                     await db.rollback()
-                except Exception:
-                    pass
+                except Exception as rollback_err:
+                    logger.warning("Rollback failed after delete error: %s", rollback_err)
                 raise
         return obj

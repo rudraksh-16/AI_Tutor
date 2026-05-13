@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -17,7 +18,7 @@ router = APIRouter()
 
 class QuizChatRequest(BaseModel):
     chapter_id: UUID
-    user_message: str | None = Field(None, max_length=10000)
+    user_message: Optional[str] = Field(None, max_length=10000)
     resume_stream: bool = False
 
 

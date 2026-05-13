@@ -19,7 +19,14 @@ Additional context / constraints (if any):
 Generate a concise hypothetical answer.
 """
 
-client = OpenAI(api_key=LLMConfig.OPENAI_API_KEY)
+_client: Optional[OpenAI] = None
+
+
+def _get_client() -> OpenAI:
+    global _client
+    if _client is None:
+        _client = OpenAI(api_key=LLMConfig.OPENAI_API_KEY)
+    return _client
 
 
 def expand_query(query: str, extra: Optional[Any] = None) -> str:
@@ -29,7 +36,7 @@ def expand_query(query: str, extra: Optional[Any] = None) -> str:
     """
     try:
         formatted_extra = "" if extra is None else str(extra)
-        response = client.responses.create(
+        response = _get_client().responses.create(
             model=MODEL,
             temperature=TEMPERATURE,
             input=QUERY_EXPANDER_PROMPT.format(

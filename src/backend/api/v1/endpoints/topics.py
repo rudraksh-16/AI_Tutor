@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.backend.api.auth.utils import get_current_user
+from src.backend.api.auth.utils import get_current_user, get_ws_user
 from src.backend.api.ws.connection_manager import manager
 from src.backend.common.exceptions import EntityNotFoundError
 from src.backend.db.database import get_db
@@ -116,22 +116,39 @@ async def get_planning_status(
 
 
 @router.websocket("/{topic_id}/status/ws")
-async def websocket_planning_status(websocket: WebSocket, topic_id: UUID, db: AsyncSession = Depends(get_db)):
-    """WebSocket endpoint to push live planning status."""
-    await manager.connect(websocket, str(topic_id))
+async def websocket_planning_status(
+    websocket: WebSocket,
+    topic_id: UUID,
+    token: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """WebSocket endpoint to push live planning status. Auth via ?token= query param."""
+    await websocket.accept()
+
     try:
-        # Send initial status immediately upon connection
+        current_user = await get_ws_user(token or "", db)
+    except HTTPException:
+        await websocket.close(code=1008)
+        return
+
+    topic_obj = await topic_repo.get(db, topic_id)
+    if not topic_obj or str(topic_obj.user_id) != str(current_user.id):
+        await websocket.close(code=1008)
+        return
+
+    topic_key = str(topic_id)
+    if topic_key not in manager.active_connections:
+        manager.active_connections[topic_key] = []
+    manager.active_connections[topic_key].append(websocket)
+
+    try:
         initial_status = await PlannerService.get_planning_status(db, topic_id)
         if "error" not in initial_status:
             await websocket.send_json(initial_status)
-            
-        # Keep connection open and alive
         while True:
-            # We don't expect messages from the client in this one-way push approach,
-            # but we wait for text to detect disconnects.
             await websocket.receive_text()
     except WebSocketDisconnect:
-        manager.disconnect(websocket, str(topic_id))
+        manager.disconnect(websocket, topic_key)
     except Exception:
-        manager.disconnect(websocket, str(topic_id))
+        manager.disconnect(websocket, topic_key)
 

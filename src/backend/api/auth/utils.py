@@ -87,3 +87,10 @@ async def _get_user_from_payload(payload: Dict[str, Any], db: AsyncSession) -> U
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
+
+async def get_ws_user(token: str, db: AsyncSession) -> User:
+    """Authenticate a WebSocket connection via token query param."""
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+    payload = _decode_token(token, Config.ACCESS_SECRET_KEY)
+    return await _get_user_from_payload(payload, db)

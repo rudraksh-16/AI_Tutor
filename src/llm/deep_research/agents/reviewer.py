@@ -13,10 +13,10 @@ class Reviewer(Agent):
     def __init__(
         self,
         state: ResearchState,
-        model=DeepResearchConstants.DEFAULT_MODEL,
-        temperature=DeepResearchConstants.DEFAULT_TEMPERATURE,
-        max_iteration=DeepResearchConstants.DEFAULT_MAX_RETRIES,
-    ):
+        model: str = DeepResearchConstants.DEFAULT_MODEL,
+        temperature: float = DeepResearchConstants.DEFAULT_TEMPERATURE,
+        max_iteration: int = DeepResearchConstants.DEFAULT_MAX_RETRIES,
+    ) -> None:
         self.state = state
         logger.info("Initializing Reviewer Agent")
 

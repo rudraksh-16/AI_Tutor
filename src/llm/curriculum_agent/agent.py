@@ -1,4 +1,4 @@
-from typing import Dict, Any, Set
+from typing import Dict, Any
 from src.llm.agent_core.agent import Agent
 from src.llm.curriculum_agent.prompt import SYSTEM_PROMPT
 from src.llm.curriculum_agent.constant import CurriculumConstants

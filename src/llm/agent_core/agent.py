@@ -21,7 +21,7 @@ class Agent:
         temperature: float = Constants.DEFAULT_TEMPERATURE,
         max_iteration: int = Constants.DEFAULT_MAX_ITERATION,
         max_tool_call: int = Constants.DEFAULT_MAX_TOOL_CALLS,
-    ):
+    ) -> None:
         self.client = OpenAI(api_key=LLMConfig.OPENAI_API_KEY)
         self.client_async = AsyncOpenAI(api_key=LLMConfig.OPENAI_API_KEY)
         self.system_prompt = system_prompt
@@ -32,13 +32,13 @@ class Agent:
         self.max_tool_call = max_tool_call
         self.tools = {}
 
-    def add_tool(self, tool: Tool):
+    def add_tool(self, tool: Tool) -> None:
         self.tools[tool.name] = tool
 
-    def on_tool_result(self, tool_name: str, args: dict, result: dict):
+    def on_tool_result(self, tool_name: str, args: Dict[str, Any], result: Dict[str, Any]) -> None:
         pass
 
-    async def _execute_tool(self, name: str, args: Optional[dict]):
+    async def _execute_tool(self, name: str, args: Optional[Dict[str, Any]]) -> Any:
         """Execute a tool with error handling for LLM feedback."""
         try:
             if args:
@@ -48,7 +48,7 @@ class Agent:
             logger.error("Agent %s: Tool execution failed: %s", self.__class__.__name__, e)
             return {"status": "error", "message": f"{type(e).__name__}: {str(e)}"}
 
-    def _call_llm(self, chat_history: List[dict], stream: bool = False):
+    def _call_llm(self, chat_history: List[Dict[str, Any]], stream: bool = False) -> Any:
         return self.client.responses.create(
             model=self.model,
             temperature=self.temperature,
@@ -58,7 +58,7 @@ class Agent:
             stream=stream,
         )
 
-    def _format_chat_history(self, chat_history: list[dict]) -> List[dict]:
+    def _format_chat_history(self, chat_history: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         history = [
             {"role": "system", "content": self.system_prompt},
         ]
@@ -75,7 +75,7 @@ class Agent:
 
         return history
 
-    async def invoke(self, chat_history=None):
+    async def invoke(self, chat_history: Optional[List[Dict[str, Any]]] = None) -> Tuple[str, list]:
         """Synchronous-like execution of the agent (no streaming delta events)."""
         chat_history = self._format_chat_history(chat_history or [])
         tool_calls = []
@@ -135,7 +135,7 @@ class Agent:
                 async for chunk in self._dispatch_event(event, state, chat_history):
                     yield chunk
 
-    async def _dispatch_event(self, event, state, chat_history):
+    async def _dispatch_event(self, event: Any, state: Dict[str, Any], chat_history: List[Dict[str, Any]]) -> AsyncGenerator[Dict[str, Any], None]:
         """Dispatch stream events to specific handlers."""
         if event.type == "response.output_text.delta":
             yield self._handle_text_delta(event, state)
@@ -149,19 +149,19 @@ class Agent:
         elif event.type == "response.completed":
             yield self._handle_completed(state)
 
-    def _handle_text_delta(self, event, state):
+    def _handle_text_delta(self, event: Any, state: Dict[str, Any]) -> Dict[str, Any]:
         state["final_text"] += event.delta
         return {"type": "text", "content": event.delta}
 
-    def _handle_item_added(self, event, state):
+    def _handle_item_added(self, event: Any, state: Dict[str, Any]) -> None:
         if getattr(event.item, "type", None) == "function_call":
             state["current_tool"] = {"name": event.item.name, "call_id": event.item.call_id}
             state["tool_args_buffer"] = ""
 
-    def _handle_args_delta(self, event, state):
+    def _handle_args_delta(self, event: Any, state: Dict[str, Any]) -> None:
         state["tool_args_buffer"] += event.delta or ""
 
-    async def _handle_args_done(self, state, chat_history):
+    async def _handle_args_done(self, state: Dict[str, Any], chat_history: List[Dict[str, Any]]) -> AsyncGenerator[Dict[str, Any], None]:
         current_tool = state["current_tool"]
         args = json.loads(state["tool_args_buffer"] or "{}")
         
@@ -181,13 +181,13 @@ class Agent:
         state["current_tool"] = None
         state["tool_args_buffer"] = ""
 
-    def _handle_completed(self, state):
+    def _handle_completed(self, state: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "type": "final",
             "data": {"assistant_text": state["final_text"], "tool_calls": state["tool_calls"]}
         }
 
-    async def _call_llm_async(self, chat_history: List[dict], stream: bool = False):
+    async def _call_llm_async(self, chat_history: List[Dict[str, Any]], stream: bool = False) -> Any:
         return await self.client_async.responses.create(
             model=self.model,
             temperature=self.temperature,

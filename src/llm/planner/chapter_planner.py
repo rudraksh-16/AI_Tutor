@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.backend.db.database import SessionLocal
 from src.backend.common.exceptions import AlreadyExistsError
-from src.backend.repository.planner_repo import planner_repo
+from src.backend.planner.repository import planner_repo
 from src.llm.config import LLMConfig
 from src.llm.planner.constant import PlannerConstants
 from src.llm.planner.prompt import SYSTEM_PROMPT, USER_PROMPT

@@ -1,0 +1,477 @@
+# Instincts generated from https://github.com/rudraksh-16/AI_Tutor
+# Generated: 2026-06-11T16:18:41.177Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: AI_Tutor-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: fix, feat, security, docs, refactor
+
+## Evidence
+
+- 17 commits analyzed
+- Detected conventional commit pattern
+- Examples: feat: update the prompt, security: require JWT secrets from env, remove hardcoded defaults
+
+---
+id: AI_Tutor-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Commit Length
+
+## Action
+
+Write moderate-length commit messages (~66 characters)
+
+## Evidence
+
+- Average commit message length: 66 chars
+- Based on 17 commits
+
+---
+id: AI_Tutor-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: AI_Tutor-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: AI_Tutor-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: AI_Tutor-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: AI_Tutor-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~16x per month
+- Files: **/api/**
+
+---
+id: AI_Tutor-workflow-api-endpoint-update-or-addition
+trigger: "when doing api endpoint update or addition"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Workflow Api Endpoint Update Or Addition
+
+## Action
+
+Follow the api-endpoint-update-or-addition workflow:
+1. Modify or create one or more files in src/backend/api/v1/endpoints/
+2. Update related repository or service files (e.g., src/backend/repository/...)
+3. Optionally update schemas in src/backend/schemas/ or related directories
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: src/backend/api/v1/endpoints/*.py, src/backend/repository/*.py, src/backend/services/*.py
+
+---
+id: AI_Tutor-workflow-security-configuration-update
+trigger: "when doing security configuration update"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Workflow Security Configuration Update
+
+## Action
+
+Follow the security-configuration-update workflow:
+1. Update configuration files (e.g., src/backend/config.py)
+2. Modify authentication or utility files (e.g., src/backend/api/auth/utils.py)
+3. Update documentation or environment sample files (e.g., .env.sample)
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: src/backend/config.py, src/backend/api/auth/utils.py, .env.sample
+
+---
+id: AI_Tutor-workflow-coding-regulations-compliance-fix
+trigger: "when doing coding regulations compliance fix"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/rudraksh-16/AI_Tutor
+---
+
+# AI_Tutor Workflow Coding Regulations Compliance Fix
+
+## Action
+
+Follow the coding-regulations-compliance-fix workflow:
+1. Update multiple backend and LLM files to add type hints and standardize code style
+2. Refactor logging and exception handling
+3. Apply consistent type usage (e.g., Optional[str])
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: src/backend/api/v1/endpoints/*.py, src/backend/repository/*.py, src/llm/**/*.py
+
+---
+id: ai_tutor-coding-convention-file-naming
+trigger: "When creating or renaming a file in the codebase"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Coding Convention File Naming
+
+## Action
+
+Use snake_case for file names
+
+## Evidence
+
+- Pattern in namingConventions.files
+- Observed in src/backend/repository/course_repo.py
+
+---
+id: ai_tutor-coding-convention-function-naming
+trigger: "When defining a new function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Coding Convention Function Naming
+
+## Action
+
+Use camelCase for function names
+
+## Evidence
+
+- Pattern in namingConventions.functions
+
+---
+id: ai_tutor-coding-convention-class-naming
+trigger: "When defining a new class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Coding Convention Class Naming
+
+## Action
+
+Use PascalCase for class names
+
+## Evidence
+
+- Pattern in namingConventions.classes
+
+---
+id: ai_tutor-coding-convention-constant-naming
+trigger: "When defining a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Coding Convention Constant Naming
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names
+
+## Evidence
+
+- Pattern in namingConventions.constants
+
+---
+id: ai_tutor-coding-convention-import-style
+trigger: "When importing modules in Python files"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Coding Convention Import Style
+
+## Action
+
+Use relative imports
+
+## Evidence
+
+- Pattern in importStyle
+- Seen in src/backend/repository/course_repo.py
+
+---
+id: ai_tutor-coding-convention-export-style
+trigger: "When exporting functions or classes"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Coding Convention Export Style
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle
+
+---
+id: ai_tutor-testing-patterns-location
+trigger: "When writing tests for a feature"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Testing Patterns Location
+
+## Action
+
+Place test files in a separate test directory from the source code
+
+## Evidence
+
+- Pattern in architecture.testLocation
+
+---
+id: ai_tutor-testing-patterns-feature-workflow
+trigger: "When implementing a new feature"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Testing Patterns Feature Workflow
+
+## Action
+
+Add tests for the feature after implementation and before updating documentation
+
+## Evidence
+
+- feature-development workflow commitSequence
+- Example: feat: update the prompt → add tests → update documentation
+
+---
+id: ai_tutor-git-convention-commit-format
+trigger: "When making a commit"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Git Convention Commit Format
+
+## Action
+
+Use conventional commit prefixes (fix, feat, security, docs, refactor, chore) followed by a colon and a short description
+
+## Evidence
+
+- Pattern in commits.prefixes
+- Examples: 'feat: update the prompt', 'security: require JWT secrets from env, remove hardcoded defaults'
+
+---
+id: ai_tutor-git-convention-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Git Convention Commit Length
+
+## Action
+
+Keep the commit message concise, around 66 characters on average
+
+## Evidence
+
+- Pattern in commits.averageLength
+
+---
+id: ai_tutor-workflow-api-endpoint-update
+trigger: "When adding or updating an API endpoint"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Workflow Api Endpoint Update
+
+## Action
+
+Modify or create files in src/backend/api/v1/endpoints/, then update related repository/service files, and optionally update schemas
+
+## Evidence
+
+- api-endpoint-update-or-addition workflow steps
+- Example: src/backend/api/v1/endpoints/chapters.py, src/backend/repository/*.py
+
+---
+id: ai_tutor-workflow-security-configuration-update
+trigger: "When making security-related changes (e.g., JWT, auth, env vars)"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Workflow Security Configuration Update
+
+## Action
+
+Update src/backend/config.py, modify src/backend/api/auth/utils.py, and update .env.sample
+
+## Evidence
+
+- security-configuration-update workflow steps
+- Example: 'security: require JWT secrets from env, remove hardcoded defaults'
+
+---
+id: ai_tutor-workflow-coding-regulations-compliance
+trigger: "When enforcing or improving coding standards"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: rudraksh-16/AI_Tutor
+---
+
+# Ai_tutor Workflow Coding Regulations Compliance
+
+## Action
+
+Update backend and LLM files to add type hints, standardize code style, refactor logging/exception handling, and apply consistent type usage
+
+## Evidence
+
+- coding-regulations-compliance-fix workflow steps
+- Example: 'Update multiple backend and LLM files to add type hints and standardize code style'
+

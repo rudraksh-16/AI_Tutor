@@ -208,3 +208,6 @@ marimo/_lsp/
 __marimo__/
 
 chat_history/
+azure.env
+backend.yaml
+.dockerignore

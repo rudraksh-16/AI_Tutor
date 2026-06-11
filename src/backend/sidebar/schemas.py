@@ -7,6 +7,7 @@ class SidebarTopicItem(BaseModel):
     id: UUID4
     title: str
     status: TopicStatus
+    planning_complete: bool = False
 
     class Config:
         from_attributes = True

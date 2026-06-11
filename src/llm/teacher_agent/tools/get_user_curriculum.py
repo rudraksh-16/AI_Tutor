@@ -3,7 +3,7 @@ from typing import Dict, Any
 from uuid import UUID
 
 from src.backend.db.database import SessionLocal
-from src.backend.repository.course_repo import course_repo
+from src.backend.chapters.course_repository import course_repo
 from src.llm.agent_core.tool import Tool
 
 logger = logging.getLogger(__name__)

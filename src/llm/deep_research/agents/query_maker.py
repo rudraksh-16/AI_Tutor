@@ -19,7 +19,7 @@ class QueryMaker(Agent):
         model: str = DeepResearchConstants.DEFAULT_MODEL,
         temperature: float = DeepResearchConstants.DEFAULT_TEMPERATURE,
         max_iteration: int = DeepResearchConstants.DEFAULT_MAX_RETRIES,
-    ):
+    ) -> None:
         self.state = state
         logger.info("Initializing QueryMaker Agent")
 
@@ -47,7 +47,7 @@ def query_node(state: ResearchState) -> ResearchState:
     chat_history = []
     ai_response, _ = query_agent.invoke(chat_history)
     logger.info("QueryMaker Agent invoke completed sucessfully")
-    logger.info(f"Generated response {ai_response}")
+    logger.info("Generated response %s", ai_response)
     try:
         plan = json.loads(ai_response)
     except json.JSONDecodeError:

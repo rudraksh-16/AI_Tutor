@@ -1,14 +1,15 @@
 import asyncio
+from typing import Any, Callable, Optional, Type
 
 
 class Tool:
-    def __init__(self, func, description: str = None, args_schema=None):
+    def __init__(self, func: Callable[..., Any], description: Optional[str] = None, args_schema: Optional[Any] = None) -> None:
         self.name = func.__name__
         self.func = func
         self.description = description
         self.args_schema = args_schema
 
-    async def execute(self, **kwargs):
+    async def execute(self, **kwargs: Any) -> Any:
         if asyncio.iscoroutinefunction(self.func):
             return await self.func(**kwargs)
         return self.func(**kwargs)
@@ -32,7 +33,7 @@ class Tool:
             if getattr(args, "required", False):
                 parameters["required"].append(name)
 
-    def _build_arg_schema(self, args) -> dict:
+    def _build_arg_schema(self, args: Any) -> dict:
         """Build the individual field schema for a tool argument."""
         field = {
             "type": self._map_type(args.type),
@@ -45,7 +46,7 @@ class Tool:
         return field
 
     @staticmethod
-    def _map_type(py_type):
+    def _map_type(py_type: Type[Any]) -> str:
         return {
             int: "integer",
             float: "number",

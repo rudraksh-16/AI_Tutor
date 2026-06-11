@@ -18,6 +18,7 @@ class Message(BaseModel):
     __tablename__ = "messages"
     __table_args__ = (
         Index("ix_messages_conv_created", "conversation_id", "created_at"),
+        Index("ix_messages_conv_sequence", "conversation_id", "sequence"),
     )
 
     conversation_id = Column(

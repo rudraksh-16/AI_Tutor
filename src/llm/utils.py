@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Any, Dict, List
 
 
 def load_json(file_path: str) -> list:
@@ -15,7 +16,8 @@ def load_json(file_path: str) -> list:
     return data
 
 
-def append_response_json(file_path: str, new_item):
+def append_response_json(file_path: str, new_item: Any) -> None:
+    """Append one item (or extend with a list) into a JSON file."""
     data = load_json(file_path)
     if isinstance(new_item, list):
         data.extend(new_item)
@@ -25,8 +27,9 @@ def append_response_json(file_path: str, new_item):
         json.dump(data, f, indent=2, default=str)
 
 
-def extract(tool_results):
-    result = []
+def extract(tool_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Extract tool input/output pairs, excluding curriculum-fetch calls."""
+    result: List[Dict[str, Any]] = []
     for tool in tool_results:
         if tool["input"]["name"] == "get_user_curriculum_tool":
             continue
@@ -35,8 +38,9 @@ def extract(tool_results):
     return result
 
 
-def add_message(final_data):
-    chat_history = []
+def add_message(final_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Convert agent final_data into an OpenAI-compatible chat history list."""
+    chat_history: List[Dict[str, Any]] = []
     tools = extract(final_data["tool_calls"])
     if final_data["assistant_text"].strip():
         assistant = {"role": "assistant", "content": final_data["assistant_text"]}
